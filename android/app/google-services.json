@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "729664224740",
+    "project_id": "appointment-diary",
+    "storage_bucket": "appointment-diary.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:729664224740:android:af082c4a0a816b0ae05bf1",
+        "android_client_info": {
+          "package_name": "com.example.appointment_diary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "729664224740-ejf3u434rt3l14c3dlglalbsa91jt9m7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDygVOQPgB-dTePseAe-zWFnpcQ1xXGumE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "729664224740-ejf3u434rt3l14c3dlglalbsa91jt9m7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
