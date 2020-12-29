@@ -1,9 +1,11 @@
-import 'package:appointment_diary/constants.dart';
+//import 'package:appointment_diary/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:appointment_diary/Screens/Welcome/welcome_screen.dart';
-import 'package:appointment_diary/constants.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -15,7 +17,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        primaryColor: kPrimaryColor,
+        //primaryColor: kPrimaryColor,
         scaffoldBackgroundColor: Colors.blue[900],
 
         //visualDensity: VisualDensity.adaptivePlatformDensity,
