@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:appointment_diary/Screens/Register/regSuccess.dart';
+import 'package:appointment_diary/Screens/EnterPatient/assistantDrawer.dart';
 
 class FeeScreen extends StatefulWidget {
   @override
@@ -12,6 +13,11 @@ class _FeeScreenState extends State<FeeScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.blue[900],
+      appBar: AppBar(
+        backgroundColor: Colors.blue[900],
+        title: Text(''),
+      ),
+      drawer: AssistantDrawer(),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(

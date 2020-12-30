@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:appointment_diary/Screens/EnterPatient/enterPatient.dart';
 import 'package:appointment_diary/Screens/PatientList/patientTable.dart';
+import 'package:appointment_diary/Screens/EnterPatient/assistantDrawer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -29,6 +30,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        backgroundColor: Colors.blue[900],
+        title: Text(''),
+      ),
+      drawer: AssistantDrawer(),
       body: Container(
         width: double.infinity,
         height: size.height,

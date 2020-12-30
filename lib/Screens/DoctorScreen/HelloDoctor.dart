@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:appointment_diary/Screens/PatientList/patientTable.dart';
 import 'package:appointment_diary/Screens/DoctorScreen/Fee.dart';
+import 'package:appointment_diary/Screens/EnterPatient/assistantDrawer.dart';
 
 class HelloDScreen extends StatefulWidget {
   @override
@@ -13,6 +14,11 @@ class _HelloDScreenState extends State<HelloDScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.blue[900],
+      appBar: AppBar(
+        backgroundColor: Colors.blue[900],
+        title: Text(''),
+      ),
+      drawer: AssistantDrawer(),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(

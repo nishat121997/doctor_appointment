@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:appointment_diary/Screens/Success/successfullyAdded.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:appointment_diary/Screens/EnterPatient/assistantDrawer.dart';
 
 class EnterPatient extends StatefulWidget {
   @override
@@ -78,6 +79,11 @@ class _EnterPatientState extends State<EnterPatient> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.blue[900],
+      appBar: AppBar(
+        backgroundColor: Colors.blue[900],
+        title: Text(''),
+      ),
+      drawer: AssistantDrawer(),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: SingleChildScrollView(

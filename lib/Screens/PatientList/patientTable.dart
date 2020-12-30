@@ -28,37 +28,6 @@ class _PatientTableScreenState extends State<PatientTableScreen> {
       }
   }
 
-  //DataTable dataBody() {
-  // return DataTable(
-  //   columns: [
-  //     DataColumn(
-  //         label: Text('Sl No'), numeric: false, tooltip: 'THIS IS Serial No'),
-  //     DataColumn(label: Text('NAME'), numeric: false, tooltip: 'THIS NAME'),
-  //     DataColumn(
-  //         label: Text('GENDER'), numeric: false, tooltip: 'THIS IS Age'),
-  //     DataColumn(label: Text('AGE'), numeric: false, tooltip: 'THIS IS age'),
-  //   ],
-  //   rows: users
-  //       .map(
-  //         (user) => DataRow(cells: [
-  //           DataCell(
-  //             Text(user.SerialNo),
-  //           ),
-  //           DataCell(
-  //             Text(user.lastName),
-  //           ),
-  //           DataCell(
-  //             Text(user.gender),
-  //           ),
-  //           DataCell(
-  //             Text(user.age),
-  //           ),
-  //         ]),
-  //       )
-  //       .toList(),
-  // );
-  //}
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,7 +51,10 @@ class _PatientTableScreenState extends State<PatientTableScreen> {
 
           children: <Widget>[
             StreamBuilder(
-              stream: _firestore.collection('patients').snapshots(),
+              stream: _firestore
+                  .collection('patients')
+                  .orderBy('sl no', descending: false)
+                  .snapshots(),
               // ignore: missing_return
               builder: (context, snapshot) {
                 if (!snapshot.hasData) return new Text('Loading...');
@@ -93,7 +65,7 @@ class _PatientTableScreenState extends State<PatientTableScreen> {
                     ),
                     new DataColumn(label: Text('Name')),
                     new DataColumn(label: Text('Age')),
-                    //new DataColumn(label: Text('gender')),
+                    new DataColumn(label: Text('')),
                   ],
                   rows: _createRows(snapshot.data),
                 );
@@ -112,6 +84,21 @@ class _PatientTableScreenState extends State<PatientTableScreen> {
         DataCell(Text(documentSnapshot.data()['sl no'].toString())),
         DataCell(Text(documentSnapshot.data()['name'].toString())),
         DataCell(Text(documentSnapshot.data()['age'].toString())),
+        DataCell(
+          IconButton(
+            icon: Icon(
+              Icons.delete,
+              color: Colors.red,
+            ),
+            onPressed: () {
+              _firestore
+                  .collection('patients')
+                  .document(documentSnapshot.documentID)
+                  .delete();
+            },
+          ),
+        )
+
         //DataCell(Text(documentSnapshot.data()['gender'].toString())),
       ]);
     }).toList();
