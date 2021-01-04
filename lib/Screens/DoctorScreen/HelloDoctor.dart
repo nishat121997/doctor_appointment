@@ -9,6 +9,7 @@ class HelloDScreen extends StatefulWidget {
 }
 
 class _HelloDScreenState extends State<HelloDScreen> {
+  DateTime _dateTime;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,16 +41,31 @@ class _HelloDScreenState extends State<HelloDScreen> {
             ),
             Container(
               color: Colors.white,
-              child: TextFormField(
-                onChanged: (value) {
-                  //Do something with the user input.
-                },
-                decoration: InputDecoration(
-                  icon: Icon(Icons.calendar_today),
-                  hintText: 'Select Date',
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-                ),
+              child: Column(
+                children: <Widget>[
+                  RaisedButton(
+                    child: Text('Select a date'),
+                    onPressed: () {
+                      showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(3000))
+                          .then((date) {
+                        setState(() {
+                          _dateTime = date;
+                        });
+                      });
+                    },
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    _dateTime == null
+                        ? 'Nothing has been selected'
+                        : '${_dateTime.day}/${_dateTime.month}/${_dateTime.year}',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ],
               ),
             ),
             SizedBox(
@@ -88,16 +104,31 @@ class _HelloDScreenState extends State<HelloDScreen> {
             ),
             Container(
               color: Colors.white,
-              child: TextFormField(
-                onChanged: (value) {
-                  //Do something with the user input.
-                },
-                decoration: InputDecoration(
-                  icon: Icon(Icons.calendar_today),
-                  hintText: 'Select Date',
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-                ),
+              child: Column(
+                children: <Widget>[
+                  RaisedButton(
+                    child: Text('Select a date'),
+                    onPressed: () {
+                      showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(3000))
+                          .then((date) {
+                        setState(() {
+                          _dateTime = date;
+                        });
+                      });
+                    },
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    _dateTime == null
+                        ? 'Nothing has been selected'
+                        : '${_dateTime.day}/${_dateTime.month}/${_dateTime.year}',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ],
               ),
             ),
             SizedBox(

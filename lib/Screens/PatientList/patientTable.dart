@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:appointment_diary/Screens/DoctorScreen/HelloDoctor.dart';
+import 'package:appointment_diary/Screens/PatientList/PatientDetail.dart';
 import 'package:appointment_diary/Screens/EnterPatient/table.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -61,7 +63,7 @@ class _PatientTableScreenState extends State<PatientTableScreen> {
                 return new DataTable(
                   columns: <DataColumn>[
                     new DataColumn(
-                      label: Text('Sl no'),
+                      label: Text('Sl'),
                     ),
                     new DataColumn(label: Text('Name')),
                     new DataColumn(label: Text('Age')),
@@ -82,8 +84,33 @@ class _PatientTableScreenState extends State<PatientTableScreen> {
         snapshot.docs.map((DocumentSnapshot documentSnapshot) {
       return new DataRow(cells: [
         DataCell(Text(documentSnapshot.data()['sl no'].toString())),
-        DataCell(Text(documentSnapshot.data()['name'].toString())),
+        DataCell(FlatButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return PatientInfoScreen();
+                },
+              ),
+            );
+          },
+          child: (Text(documentSnapshot.data()['name'].toString())),
+        )),
         DataCell(Text(documentSnapshot.data()['age'].toString())),
+        // DataCell(FlatButton(
+        //   onPressed: () {
+        //     Navigator.push(
+        //       context,
+        //       MaterialPageRoute(
+        //         builder: (context) {
+        //           return HelloDScreen();
+        //         },
+        //       ),
+        //     );
+        //   },
+        //   child: (Text(documentSnapshot.data()['age'].toString())),
+        // )),
         DataCell(
           IconButton(
             icon: Icon(

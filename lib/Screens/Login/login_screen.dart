@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:appointment_diary/Screens/Register/reg_screen.dart';
 import 'package:appointment_diary/Screens/EnterPatient/enterPatient.dart';
 import 'package:appointment_diary/Screens/recover/recoverPass.dart';
@@ -12,12 +11,11 @@ class LoginScreen extends StatefulWidget {
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-//enum designation { Doctor, Assistant }
-
 class _LoginScreenState extends State<LoginScreen> {
   String designation;
   final _firestore = Firestore.instance;
   final _auth = FirebaseAuth.instance;
+  FirebaseUser loggedInUser;
 
   String email;
   String password;
@@ -28,13 +26,18 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
+    getCurrentUser();
   }
 
-  _saveForm() {
-    var form = formKey.currentState;
-    if (form.validate()) {
-      form.save();
-      setState(() {});
+  void getCurrentUser() async {
+    try {
+      final user = await _auth.currentUser;
+      if (user != null) {
+        loggedInUser = user;
+        print(loggedInUser.email);
+      }
+    } catch (e) {
+      print('User Not created');
     }
   }
 
@@ -61,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: <Widget>[
                   Container(
                     alignment: Alignment.center,
-                    margin: EdgeInsets.fromLTRB(0, 100, 0, 0),
+                    margin: EdgeInsets.fromLTRB(0, 150, 0, 0),
                     child: Text('LOG IN TO YOUR ACCOUNT',
                         style: TextStyle(
                             fontFamily: 'Source Sans Pro',
@@ -70,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             fontWeight: FontWeight.bold)),
                   ),
                   SizedBox(
-                    height: 50,
+                    height: 60,
                   ),
                   Container(
                     color: Colors.white,
@@ -88,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   SizedBox(
-                    height: 12,
+                    height: 15,
                   ),
                   Container(
                     color: Colors.white,
@@ -107,46 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   SizedBox(
-                    height: 12,
-                  ),
-                  Container(
-                    child: Container(
-                      //padding: EdgeInsets.all(8),
-                      color: Colors.white,
-                      //margin: EdgeInsets.fromLTRB(20, 130, 20, 50),
-                      child: Form(
-                          key: formKey,
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Container(
-                                  padding: EdgeInsets.all(16),
-                                  child: DropdownButton(
-                                    hint: Text('LogIn As'),
-                                    onChanged: (val) {
-                                      print(val);
-                                      setState(() {
-                                        this.designation = val;
-                                      });
-                                    },
-                                    value: this.designation,
-                                    items: [
-                                      DropdownMenuItem(
-                                        child: Text('Doctor'),
-                                        value: 'Doctor',
-                                      ),
-                                      DropdownMenuItem(
-                                        child: Text('Assistant'),
-                                        value: 'Assistant',
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ])),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 40.0,
+                    height: 50.0,
                   ),
                   Container(
                     //margin: EdgeInsets.fromLTRB(20, 550, 20, 60),
@@ -160,16 +124,31 @@ class _LoginScreenState extends State<LoginScreen> {
                           try {
                             final user = await _auth.signInWithEmailAndPassword(
                                 email: email, password: password);
-                            if (user != null) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return EnterPatient();
-                                  },
-                                ),
-                              );
-                            }
+                            final value = FirebaseFirestore.instance
+                                .collection('Doctor')
+                                .doc(user.user.uid)
+                                .get()
+                                .then((value) {
+                              if (value.exists) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return HelloDScreen();
+                                    },
+                                  ),
+                                );
+                              } else {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return EnterPatient();
+                                    },
+                                  ),
+                                );
+                              }
+                            });
                           } catch (e) {
                             print(e);
                           }
@@ -187,40 +166,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(
                     height: 20,
-                  ),
-                  Container(
-                    //margin: EdgeInsets.fromLTRB(20, 550, 20, 60),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(29),
-                      child: FlatButton(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 16, horizontal: 50),
-                        color: Colors.blue[700],
-                        onPressed: () async {
-                          final user = await _auth.signInWithEmailAndPassword(
-                              email: email, password: password);
-
-                          if (user != null) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return HelloDScreen();
-                                },
-                              ),
-                            );
-                          }
-                        },
-                        child: Text(
-                          "DOCTOR LOG IN",
-                          style: TextStyle(
-                              fontFamily: 'Source Sans Pro',
-                              fontSize: 20,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
                   ),
                   SizedBox(
                     height: 10,

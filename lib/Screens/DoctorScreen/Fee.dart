@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:appointment_diary/Screens/Register/regSuccess.dart';
-import 'package:appointment_diary/Screens/EnterPatient/assistantDrawer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FeeScreen extends StatefulWidget {
   @override
@@ -8,181 +9,87 @@ class FeeScreen extends StatefulWidget {
 }
 
 class _FeeScreenState extends State<FeeScreen> {
+  final _firestore = Firestore.instance;
+  final _auth = FirebaseAuth.instance;
+  final collections = Firestore.instance.collection('patients');
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  var total;
+  getCartTotal(String userId) async {
+    //var total = 0;
+
+    QuerySnapshot snapshot =
+        await Firestore.instance.collection('patients').getDocuments();
+
+    if (snapshot == null) {
+      return;
+    }
+
+    snapshot.documents.forEach((doc) {
+      print(doc.data()['fee']);
+//      total = total + doc.data()['fee'];
+    });
+    print('hi');
+    print(total);
+  }
+
+  Future findTotalFee() async {
+    int myTotal = 0;
+    QuerySnapshot result =
+        await FirebaseFirestore.instance.collection('patients').get();
+    List<DocumentSnapshot> documents = result.docs;
+    documents.forEach((doc) {
+      print(doc.data());
+      print(doc.data()['fee']);
+      String tempo = doc.data()['fee'];
+      print(tempo);
+      if (tempo != null) {
+        print('inside if');
+        print(tempo);
+        int total = int.parse('$tempo');
+        myTotal = total + myTotal;
+        print('total is $myTotal');
+      }
+    });
+    this.total = myTotal;
+    return myTotal;
+  }
+
   @override
   Widget build(BuildContext context) {
+    print(findTotalFee());
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.blue[900],
-      appBar: AppBar(
-        backgroundColor: Colors.blue[900],
-        title: Text(''),
-      ),
-      drawer: AssistantDrawer(),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.0),
-        child: Column(
-          //mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-              alignment: Alignment.center,
-              margin: EdgeInsets.fromLTRB(0, 60, 0, 0),
-              child: Text('SEE YOUR UPDATE',
-                  style: TextStyle(
-                      fontFamily: 'Source Sans Pro',
-                      fontSize: 20,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold)),
-            ),
-            SizedBox(
-              height: 40,
-            ),
-            Container(
-              //alignment: Alignment.center,
-              margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-              child: Text('TOTAL PATIENT:',
-                  style: TextStyle(
-                      fontFamily: 'Source Sans Pro',
-                      fontSize: 15,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold)),
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            Container(
-              color: Colors.white,
-              child: TextFormField(
-                onChanged: (value) {
-                  //Do something with the user input.
-                },
-                decoration: InputDecoration(
-                  icon: Icon(Icons.people_alt_outlined),
-                  //hintText: 'User Name',
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+      body: FutureBuilder(
+          future: findTotalFee(),
+          builder: (BuildContext context, snapshot) {
+            if (!snapshot.hasData)
+              return CircularProgressIndicator();
+            else
+              return Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                  //mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.fromLTRB(0, 60, 0, 0),
+                      child: Text('$total',
+                          style: TextStyle(
+                              fontFamily: 'Source Sans Pro',
+                              fontSize: 20,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold)),
+                    ),
+                  ],
                 ),
-              ),
-            ),
-            SizedBox(
-              height: 12,
-            ),
-            Container(
-              //alignment: Alignment.center,
-              margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-              child: Text('CONSULTANCY:',
-                  style: TextStyle(
-                      fontFamily: 'Source Sans Pro',
-                      fontSize: 15,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold)),
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            Container(
-              color: Colors.white,
-              child: TextFormField(
-                onChanged: (value) {
-                  //Do something with the user input.
-                },
-                decoration: InputDecoration(
-                  icon: Icon(Icons.people_alt_outlined),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 12,
-            ),
-            Container(
-              //alignment: Alignment.center,
-              margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-              child: Text('FOLLOW UP:',
-                  style: TextStyle(
-                      fontFamily: 'Source Sans Pro',
-                      fontSize: 15,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold)),
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            Container(
-              color: Colors.white,
-              child: TextFormField(
-                onChanged: (value) {
-                  //Do something with the user input.
-                },
-                decoration: InputDecoration(
-                  icon: Icon(Icons.people_alt_outlined),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 12,
-            ),
-            Container(
-              //alignment: Alignment.center,
-              margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-              child: Text('REPORT:',
-                  style: TextStyle(
-                      fontFamily: 'Source Sans Pro',
-                      fontSize: 15,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold)),
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            Container(
-              color: Colors.white,
-              child: TextFormField(
-                onChanged: (value) {
-                  //Do something with the user input.
-                },
-                decoration: InputDecoration(
-                  icon: Icon(Icons.people_alt_outlined),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 12,
-            ),
-            Container(
-              //alignment: Alignment.center,
-              margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-              child: Text('TOTAL AMOUNT:',
-                  style: TextStyle(
-                      fontFamily: 'Source Sans Pro',
-                      fontSize: 15,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold)),
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            Container(
-              color: Colors.white,
-              child: TextFormField(
-                onChanged: (value) {
-                  //Do something with the user input.
-                },
-                decoration: InputDecoration(
-                  icon: Icon(Icons.money_outlined),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+              );
+          }),
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:appointment_diary/Screens/Success/successfullyAdded.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:appointment_diary/Screens/EnterPatient/assistantDrawer.dart';
+import 'dart:io';
 
 class EnterPatient extends StatefulWidget {
   @override
@@ -22,9 +23,11 @@ class _EnterPatientState extends State<EnterPatient> {
   String phone;
   String purpose;
   String date;
+  //double fee;
+  //String test0;
+  String fee;
   var selectedYear;
-  // int d, m, y;
-  // String days1 = "", month1 = "", year1 = "";
+
   final formKey = new GlobalKey<FormState>();
   final formKeyy = new GlobalKey<FormState>();
   @override
@@ -69,7 +72,7 @@ class _EnterPatientState extends State<EnterPatient> {
 
   void calculateAge() {
     setState(() {
-      age = (2020 - selectedYear).toString();
+      age = (2021 - selectedYear).toString();
     });
   }
 
@@ -328,6 +331,26 @@ class _EnterPatientState extends State<EnterPatient> {
                 ),
               ),
               SizedBox(
+                height: 12,
+              ),
+              Container(
+                color: Colors.white,
+                child: TextFormField(
+                  onChanged: (value) {
+                    fee = value;
+                    // String test0 = value;
+                    // fee = test0 as num;
+                    //Do something with the user input.
+                  },
+                  decoration: InputDecoration(
+                    icon: Icon(Icons.money_outlined),
+                    hintText: 'Fee',
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+                  ),
+                ),
+              ),
+              SizedBox(
                 height: 30,
               ),
               Container(
@@ -351,6 +374,7 @@ class _EnterPatientState extends State<EnterPatient> {
                           'gender': gender,
                           'phone': phone,
                           'purpose': purpose,
+                          'fee': fee
                         });
                         Navigator.push(
                           context,
