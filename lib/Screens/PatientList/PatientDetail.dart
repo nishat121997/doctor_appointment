@@ -45,6 +45,7 @@ class _PatientInfoScreenState extends State<PatientInfoScreen> {
                 child: CircularProgressIndicator(),
               );
             }
+
             return ListView(
                 children: snapshot.data.documents
                     .map((DocumentSnapshot documentSnapshot) {

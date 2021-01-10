@@ -18,23 +18,6 @@ class _FeeScreenState extends State<FeeScreen> {
   }
 
   var total;
-  getCartTotal(String userId) async {
-    //var total = 0;
-
-    QuerySnapshot snapshot =
-        await Firestore.instance.collection('patients').getDocuments();
-
-    if (snapshot == null) {
-      return;
-    }
-
-    snapshot.documents.forEach((doc) {
-      print(doc.data()['fee']);
-//      total = total + doc.data()['fee'];
-    });
-    print('hi');
-    print(total);
-  }
 
   Future findTotalFee() async {
     int myTotal = 0;
@@ -78,8 +61,18 @@ class _FeeScreenState extends State<FeeScreen> {
                   children: <Widget>[
                     Container(
                       alignment: Alignment.center,
-                      margin: EdgeInsets.fromLTRB(0, 60, 0, 0),
-                      child: Text('$total',
+                      margin: EdgeInsets.fromLTRB(0, 70, 0, 0),
+                      child: Text('SEE YOUR UPDATE',
+                          style: TextStyle(
+                              fontFamily: 'Source Sans Pro',
+                              fontSize: 25,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold)),
+                    ),
+                    Container(
+                      //alignment: Alignment.center,
+                      margin: EdgeInsets.fromLTRB(0, 120, 0, 0),
+                      child: Text('Total fee: $total BDT',
                           style: TextStyle(
                               fontFamily: 'Source Sans Pro',
                               fontSize: 20,

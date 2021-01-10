@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:appointment_diary/Screens/PatientList/patientTable.dart';
 import 'package:appointment_diary/Screens/Login/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class AssistantDrawer extends StatelessWidget {
+class AssistantDrawer extends StatefulWidget {
+  @override
+  _AssistantDrawerState createState() => _AssistantDrawerState();
+}
+
+class _AssistantDrawerState extends State<AssistantDrawer> {
+  final _auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -52,10 +61,15 @@ class AssistantDrawer extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
+                      _auth.signOut();
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LoginScreen()));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return LoginScreen();
+                          },
+                        ),
+                      );
                     },
                   ),
                 ),

@@ -23,11 +23,12 @@ class _EnterPatientState extends State<EnterPatient> {
   String phone;
   String purpose;
   String date;
+  String doctorEmail;
   //double fee;
   //String test0;
   String fee;
   var selectedYear;
-
+  String myDoctor;
   final formKey = new GlobalKey<FormState>();
   final formKeyy = new GlobalKey<FormState>();
   @override
@@ -74,6 +75,19 @@ class _EnterPatientState extends State<EnterPatient> {
     setState(() {
       age = (2021 - selectedYear).toString();
     });
+  }
+
+  fetchDoctorId(String email) async {
+    QuerySnapshot result =
+        await FirebaseFirestore.instance.collection('Doctor').get();
+    List<DocumentSnapshot> documents = result.docs;
+    documents.forEach((doc) {
+      if (doc.data()['Email'] == email) {
+        print(doc.id);
+        myDoctor = doc.id;
+      }
+    });
+    return myDoctor;
   }
 
   @override
@@ -127,6 +141,24 @@ class _EnterPatientState extends State<EnterPatient> {
                           fontWeight: FontWeight.bold),
                     ),
                   ],
+                ),
+              ),
+              SizedBox(
+                height: 12,
+              ),
+              Container(
+                color: Colors.white,
+                child: TextFormField(
+                  onChanged: (value) {
+                    doctorEmail = value;
+                    //Do something with the user input.
+                  },
+                  decoration: InputDecoration(
+                    icon: Icon(Icons.person_outline),
+                    hintText: 'Enter doctor email',
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+                  ),
                 ),
               ),
               SizedBox(
@@ -362,9 +394,10 @@ class _EnterPatientState extends State<EnterPatient> {
                       padding:
                           EdgeInsets.symmetric(vertical: 15, horizontal: 50),
                       color: Colors.blue[700],
-                      onPressed: () {
-                        getPatientDetail();
-                        _firestore.collection('patients').add({
+                      onPressed: () async {
+                        // getPatientDetail();
+                        await fetchDoctorId(doctorEmail);
+                        await _firestore.collection('patients').add({
                           'date': date,
                           'time': time,
                           'sl no': sl,
@@ -374,7 +407,8 @@ class _EnterPatientState extends State<EnterPatient> {
                           'gender': gender,
                           'phone': phone,
                           'purpose': purpose,
-                          'fee': fee
+                          'fee': fee,
+                          'docid': myDoctor
                         });
                         Navigator.push(
                           context,
