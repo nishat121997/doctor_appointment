@@ -17,6 +17,7 @@ class _PatientTableScreenState extends State<PatientTableScreen> {
   String name;
   String age;
   String gender;
+  String myDoctor;
 
   @override
   void initState() {
@@ -28,6 +29,19 @@ class _PatientTableScreenState extends State<PatientTableScreen> {
       for (var patient in snapshot.documents) {
         print(patient.data());
       }
+  }
+
+  fetchDoctorId(String email) async {
+    QuerySnapshot result =
+        await FirebaseFirestore.instance.collection('Doctor').get();
+    List<DocumentSnapshot> documents = result.docs;
+    documents.forEach((doc) {
+      if (doc.data()['Email'] == email) {
+        print(doc.id);
+        myDoctor = doc.id;
+      }
+    });
+    return myDoctor;
   }
 
   @override
@@ -54,6 +68,10 @@ class _PatientTableScreenState extends State<PatientTableScreen> {
           children: <Widget>[
             StreamBuilder(
               stream: _firestore
+                  .collection('Doctor')
+                  .doc(myDoctor)
+                  .collection('dd')
+                  .doc()
                   .collection('patients')
                   .orderBy('sl no', descending: false)
                   .snapshots(),

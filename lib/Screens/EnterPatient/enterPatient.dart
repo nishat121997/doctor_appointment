@@ -13,6 +13,8 @@ class EnterPatient extends StatefulWidget {
 class _EnterPatientState extends State<EnterPatient> {
   final _firestore = Firestore.instance;
   final _auth = FirebaseAuth.instance;
+  User loggedInUser;
+  String email;
 
   String time;
   String sl;
@@ -24,8 +26,6 @@ class _EnterPatientState extends State<EnterPatient> {
   String purpose;
   String date;
   String doctorEmail;
-  //double fee;
-  //String test0;
   String fee;
   var selectedYear;
   String myDoctor;
@@ -34,23 +34,21 @@ class _EnterPatientState extends State<EnterPatient> {
   @override
   void initState() {
     super.initState();
+    getCurrentUser();
   }
 
-  // _saveForm() {
-  //   var form = formKey.currentState;
-  //   if (form.validate()) {
-  //     form.save();
-  //     setState(() {});
-  //   }
-  // }
-  //
-  // _saveFormm() {
-  //   var form = formKeyy.currentState;
-  //   if (form.validate()) {
-  //     form.save();
-  //     setState(() {});
-  //   }
-  // }
+  getCurrentUser() async {
+    try {
+      final user = await _auth.currentUser;
+      if (user != null) {
+        loggedInUser = user;
+        print(loggedInUser.uid);
+        print(loggedInUser.email);
+      }
+    } catch (e) {
+      print('Fail');
+    }
+  }
 
   void getPatientDetail() async {
     final patients = await _firestore.collection('patients').getDocuments();
@@ -133,7 +131,8 @@ class _EnterPatientState extends State<EnterPatient> {
                           fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      date = '${now.day}/${now.month}/${now.year}',
+                      date =
+                          "${now.day.toString().padLeft(2, '0')}/${now.month.toString().padLeft(2, '0')}/${now.year.toString()}",
                       style: TextStyle(
                           fontFamily: 'Source Sans Pro',
                           fontSize: 20,
@@ -397,7 +396,13 @@ class _EnterPatientState extends State<EnterPatient> {
                       onPressed: () async {
                         // getPatientDetail();
                         await fetchDoctorId(doctorEmail);
-                        await _firestore.collection('patients').add({
+                        final newC = await _firestore
+                            .collection('Doctor')
+                            .doc(myDoctor)
+                            //.collection('date')
+                            //.add({'date': date});
+                            .collection('patients')
+                            .add({
                           'date': date,
                           'time': time,
                           'sl no': sl,
@@ -410,14 +415,16 @@ class _EnterPatientState extends State<EnterPatient> {
                           'fee': fee,
                           'docid': myDoctor
                         });
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return SuccessScreen();
-                            },
-                          ),
-                        );
+                        if (newC != null) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return SuccessScreen();
+                              },
+                            ),
+                          );
+                        }
                       },
                       child: Text(
                         "Add to the list",
