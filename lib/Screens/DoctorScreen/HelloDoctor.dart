@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:appointment_diary/Screens/EnterPatient/assistantDrawer.dart';
+import 'package:appointment_diary/Screens/DoctorScreen/doctorDrawer.dart';
 import 'package:appointment_diary/Screens/PatientList/PatientDetail.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,6 +20,7 @@ class _HelloDScreenState extends State<HelloDScreen> {
   //String dateId;
   User loggedInUser;
   String todayDate;
+  bool approveCondition = false;
   @override
   void initState() {
     super.initState();
@@ -100,7 +101,7 @@ class _HelloDScreenState extends State<HelloDScreen> {
           textAlign: TextAlign.center,
         ),
       ),
-      drawer: AssistantDrawer(),
+      drawer: DoctorDrawer(),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: ListView(
@@ -230,6 +231,15 @@ class _HelloDScreenState extends State<HelloDScreen> {
                         return new DataTable(
                           columns: <DataColumn>[
                             new DataColumn(
+                                label: Text(
+                              'Done',
+                              style: TextStyle(
+                                  fontFamily: 'Source Sans Pro',
+                                  fontSize: 15,
+                                  color: Colors.blue[900],
+                                  fontWeight: FontWeight.bold),
+                            )),
+                            new DataColumn(
                               label: Text(
                                 'Sl',
                                 style: TextStyle(
@@ -302,7 +312,15 @@ class _HelloDScreenState extends State<HelloDScreen> {
                                   color: Colors.blue[900],
                                   fontWeight: FontWeight.bold),
                             )),
-                            new DataColumn(label: Text('')),
+                            new DataColumn(
+                                label: Text(
+                              'Cancel',
+                              style: TextStyle(
+                                  fontFamily: 'Source Sans Pro',
+                                  fontSize: 15,
+                                  color: Colors.blue[900],
+                                  fontWeight: FontWeight.bold),
+                            )),
                           ],
                           rows: _createRows(snapshot.data, todayDate),
                         );
@@ -335,6 +353,33 @@ class _HelloDScreenState extends State<HelloDScreen> {
 
       //if (documentSnapshot.data()['date'] == 'today') {
       return new DataRow(cells: [
+        now
+            ? DataCell(IconButton(
+                onPressed: () async {
+                  approveCondition = documentSnapshot.data()['isApproved'];
+                  if (approveCondition == false) {
+                    await FirebaseFirestore.instance
+                        .collection('Doctor')
+                        .doc(myDoctor)
+                        .collection('patients')
+                        .doc(documentSnapshot.id)
+                        .update({'isApproved': true});
+                  }
+                  print('$approveCondition its condition');
+                },
+                icon: documentSnapshot.data()['isApproved']
+                    ? Icon(
+                        Icons.check,
+                        color: Colors.green,
+                        size: 30,
+                      )
+                    : Icon(
+                        Icons.check_box_outline_blank_sharp,
+                        color: Colors.blue[900],
+                        size: 30,
+                      ),
+              ))
+            : DataCell(Text('')),
         now
             ? DataCell(Text(documentSnapshot.data()['sl no'].toString(),
                 style: TextStyle(

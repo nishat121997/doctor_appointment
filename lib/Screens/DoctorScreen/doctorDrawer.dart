@@ -1,17 +1,61 @@
 import 'package:flutter/material.dart';
 import 'package:appointment_diary/Screens/PatientList/patientTable.dart';
-import 'package:appointment_diary/Screens/EnterPatient/enterPatient.dart';
 import 'package:appointment_diary/Screens/Login/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class AssistantDrawer extends StatefulWidget {
+class DoctorDrawer extends StatefulWidget {
   @override
-  _AssistantDrawerState createState() => _AssistantDrawerState();
+  _DoctorDrawerState createState() => _DoctorDrawerState();
 }
 
-class _AssistantDrawerState extends State<AssistantDrawer> {
+class _DoctorDrawerState extends State<DoctorDrawer> {
+  final userId = FirebaseAuth.instance.currentUser.uid;
+  final _firestore = Firestore.instance;
   final _auth = FirebaseAuth.instance;
+  final collections = Firestore.instance.collection('patients');
+  String myDoctor;
+  String docEmail;
+  String docName;
+  //String dateId;
+  User loggedInUser;
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+    //fetchDoctorId(docEmail);
+  }
+
+  getCurrentUser() async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        loggedInUser = user;
+
+        //print(loggedInUser.uid);
+        //print(loggedInUser.email);
+      }
+    } catch (e) {
+      print('Fail');
+    }
+  }
+
+  // fetchDoctorId(String email) async {
+  //   QuerySnapshot result =
+  //       await FirebaseFirestore.instance.collection('Doctor').get();
+  //   List<DocumentSnapshot> documents = result.docs;
+  //   documents.forEach((doc) {
+  //     if (doc.data()['Email'] == email) {
+  //       //print(doc.id);
+  //       //print(doc.data()['User Name']);
+  //       myDoctor = doc.id;
+  //       docEmail = email;
+  //       docName = doc.data()['User Name'];
+  //     }
+  //     //print('$docEmail');
+  //   });
+  //   return Text('$docName');
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -20,52 +64,19 @@ class _AssistantDrawerState extends State<AssistantDrawer> {
         child: Column(
           children: <Widget>[
             SizedBox(
-              height: 50,
+              height: 30,
             ),
-            ListTile(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return PatientTableScreen();
-                    },
-                  ),
-                );
-              },
-              title: Text(
-                'See Patient List',
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.blue[900],
-                    fontWeight: FontWeight.bold),
+            Container(
+              child: Image.asset(
+                "images/p2.png",
+                width: 80,
+                height: 50,
               ),
             ),
-            SizedBox(
-              height: 10,
+            Container(
+              child: Text(loggedInUser.email),
             ),
-            ListTile(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return EnterPatient();
-                    },
-                  ),
-                );
-              },
-              title: Text(
-                'Add to the List',
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.blue[900],
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-            SizedBox(
-              height: 50,
-            ),
+            SizedBox(height: 50),
             Container(
               alignment: Alignment.center,
               child: Center(

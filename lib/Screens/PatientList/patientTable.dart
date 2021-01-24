@@ -21,6 +21,7 @@ class _PatientTableScreenState extends State<PatientTableScreen> {
   //String dateId;
   User loggedInUser;
   String todayDate;
+  bool approveCondition = false;
   @override
   void initState() {
     super.initState();
@@ -159,7 +160,7 @@ class _PatientTableScreenState extends State<PatientTableScreen> {
                 Container(
                   alignment: Alignment.center,
                   child: Text(
-                    'Patients List for $docName',
+                    'Patients List for Dr. $docName',
                     style: TextStyle(
                         fontFamily: 'Source Sans Pro',
                         fontSize: 20,
@@ -194,6 +195,16 @@ class _PatientTableScreenState extends State<PatientTableScreen> {
                         // todayDate = snapshot.data()['date'];
                         return new DataTable(
                           columns: <DataColumn>[
+                            new DataColumn(
+                                label: Text(
+                              'Done',
+                              style: TextStyle(
+                                  fontFamily: 'Source Sans Pro',
+                                  fontSize: 15,
+                                  color: Colors.blue[900],
+                                  fontWeight: FontWeight.bold),
+                            )),
+
                             new DataColumn(
                               label: Text(
                                 'Sl',
@@ -267,7 +278,24 @@ class _PatientTableScreenState extends State<PatientTableScreen> {
                                   color: Colors.blue[900],
                                   fontWeight: FontWeight.bold),
                             )),
-                            new DataColumn(label: Text('')),
+                            new DataColumn(
+                                label: Text(
+                              'Cancel',
+                              style: TextStyle(
+                                  fontFamily: 'Source Sans Pro',
+                                  fontSize: 15,
+                                  color: Colors.blue[900],
+                                  fontWeight: FontWeight.bold),
+                            )),
+                            // new DataColumn(
+                            //     label: Text(
+                            //   'Done',
+                            //   style: TextStyle(
+                            //       fontFamily: 'Source Sans Pro',
+                            //       fontSize: 15,
+                            //       color: Colors.blue[900],
+                            //       fontWeight: FontWeight.bold),
+                            // )),
                           ],
                           rows: _createRows(snapshot.data, todayDate),
                         );
@@ -300,6 +328,33 @@ class _PatientTableScreenState extends State<PatientTableScreen> {
 
       //if (documentSnapshot.data()['date'] == 'today') {
       return new DataRow(cells: [
+        now
+            ? DataCell(IconButton(
+                onPressed: () async {
+                  approveCondition = documentSnapshot.data()['isApproved'];
+                  if (approveCondition == false) {
+                    await FirebaseFirestore.instance
+                        .collection('Doctor')
+                        .doc(myDoctor)
+                        .collection('patients')
+                        .doc(documentSnapshot.id)
+                        .update({'isApproved': true});
+                  }
+                  print('$approveCondition its condition');
+                },
+                icon: documentSnapshot.data()['isApproved']
+                    ? Icon(
+                        Icons.check,
+                        color: Colors.green,
+                        size: 30,
+                      )
+                    : Icon(
+                        Icons.check_box_outline_blank_sharp,
+                        color: Colors.blue[900],
+                        size: 30,
+                      ),
+              ))
+            : DataCell(Text('')),
         now
             ? DataCell(Text(documentSnapshot.data()['sl no'].toString(),
                 style: TextStyle(
@@ -381,8 +436,34 @@ class _PatientTableScreenState extends State<PatientTableScreen> {
                   },
                 ),
               )
-            : DataCell(Text(''))
-
+            : DataCell(Text('')),
+        // now
+        //     ? DataCell(IconButton(
+        //         onPressed: () async {
+        //           approveCondition = documentSnapshot.data()['isApproved'];
+        //           if (approveCondition == false) {
+        //             await FirebaseFirestore.instance
+        //                 .collection('Doctor')
+        //                 .doc(myDoctor)
+        //                 .collection('patients')
+        //                 .doc(documentSnapshot.id)
+        //                 .update({'isApproved': true});
+        //           }
+        //           print('$approveCondition its condition');
+        //         },
+        //         icon: documentSnapshot.data()['isApproved']
+        //             ? Icon(
+        //                 Icons.check,
+        //                 color: Colors.green,
+        //                 size: 30,
+        //               )
+        //             : Icon(
+        //                 Icons.check_box_outline_blank_sharp,
+        //                 color: Colors.blue[900],
+        //                 size: 30,
+        //               ),
+        //       ))
+        //     : DataCell(Text(''))
         //DataCell(Text(documentSnapshot.data()['gender'].toString())),
       ]);
     }).toList();
